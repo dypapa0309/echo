@@ -17,11 +17,17 @@ Quick option:
 2. Keep the generated site URL or connect your own domain
 3. Use the final URLs in app env vars
 
+Repo deploy option:
+
+1. Connect this repository to Netlify
+2. Netlify will read `netlify.toml`
+3. The deploy will publish `launch-site/` directly without running Expo web export
+
 Example:
 
 - `https://your-site.netlify.app/`
-- `https://your-site.netlify.app/support.html`
-- `https://your-site.netlify.app/privacy.html`
-- `https://your-site.netlify.app/terms.html`
+- `https://your-site.netlify.app/support`
+- `https://your-site.netlify.app/privacy`
+- `https://your-site.netlify.app/terms`
 
-If you want clean routes, move each file to its own folder as `index.html`.
+Netlify redirects for the clean routes are already included in `netlify.toml`.

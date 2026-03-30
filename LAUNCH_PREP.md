@@ -36,6 +36,13 @@ If you want clean paths on Netlify, either:
 1. Rename each page to `index.html` inside matching folders, or
 2. Keep the filenames and use the direct `.html` URLs
 
+This repo now includes `netlify.toml`, so repository deploys can publish `launch-site/` directly and still open:
+
+- `/`
+- `/support`
+- `/privacy`
+- `/terms`
+
 ## Environment Variables To Fill Before Release
 
 ```bash
