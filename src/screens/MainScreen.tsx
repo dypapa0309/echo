@@ -55,7 +55,7 @@ const readPublicEnv = (key: string): string => {
 const SUPPORT_EMAIL = readPublicEnv('EXPO_PUBLIC_SUPPORT_EMAIL');
 const PRIVACY_URL = readPublicEnv('EXPO_PUBLIC_PRIVACY_URL');
 const TERMS_URL = readPublicEnv('EXPO_PUBLIC_TERMS_URL');
-const HERO_LOGO = require('../../assets/branding/echo-logo/echo-logo-transparent.png');
+const HERO_LOGO = require('../../assets/branding/echo-logo/echo-logo.png');
 
 const buildSttRecoveryGuidance = (source: 'native' | 'mock' | 'fallback', message: string) => {
   if (source === 'native') {
@@ -2533,8 +2533,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   heroLogoImage: {
-    width: 28,
-    height: 28,
+    width: 30,
+    height: 30,
   },
   heroContent: {
     flex: 1,
