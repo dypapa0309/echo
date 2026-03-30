@@ -1,0 +1,63 @@
+{
+  "expo": {
+    "name": "Echo",
+    "slug": "echo-memo",
+    "scheme": "echo",
+    "version": "0.1.0",
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "bundleIdentifier": "com.echo.memo",
+      "supportsTabletMode": true,
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "마이크 접근 권한이 필요합니다.",
+        "NSSpeechRecognitionUsageDescription": "음성 인식 권한이 필요합니다.",
+        "NSLocationWhenInUseUsageDescription": "메모가 기록된 장소를 함께 정리하려면 위치 권한이 필요합니다.",
+        "NSCalendarsUsageDescription": "현재 일정과 함께 메모를 정리하려면 캘린더 권한이 필요합니다.",
+        "NSCalendarsFullAccessUsageDescription": "현재 일정과 함께 메모를 정리하려면 캘린더 권한이 필요합니다.",
+        "NSRemindersUsageDescription": "현재 일정과 함께 메모를 정리하려면 미리 알림 권한이 필요할 수 있습니다.",
+        "NSRemindersFullAccessUsageDescription": "현재 일정과 함께 메모를 정리하려면 미리 알림 권한이 필요할 수 있습니다.",
+        "UIBackgroundModes": ["audio"]
+      }
+    },
+    "android": {
+      "permissions": [
+        "RECORD_AUDIO",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "READ_CALENDAR",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_EXTERNAL_STORAGE"
+      ]
+    },
+    "plugins": [
+      [
+        "expo-av",
+        {
+          "microphonePermission": "마이크 접근 권한이 필요합니다."
+        }
+      ],
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "마이크 접근 권한이 필요합니다.",
+          "speechRecognitionPermission": "음성 인식 권한이 필요합니다.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox"
+          ]
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "메모가 기록된 장소를 함께 정리하려면 위치 권한이 필요합니다."
+        }
+      ],
+      [
+        "expo-calendar",
+        {
+          "calendarPermission": "현재 일정과 함께 메모를 정리하려면 캘린더 권한이 필요합니다."
+        }
+      ]
+    ]
+  }
+}

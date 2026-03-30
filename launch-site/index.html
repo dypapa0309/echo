@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Echo</title>
+    <meta
+      name="description"
+      content="Echo is a voice-first memo app for recording thoughts quickly, organizing what matters, and revisiting the right notes later."
+    />
+    <style>
+      :root {
+        --bg: #f6f3ec;
+        --surface: #fffdf8;
+        --surface-soft: #f2ede4;
+        --text: #1f2b27;
+        --muted: #6b746f;
+        --line: #e4ddd2;
+        --accent: #1f352d;
+        --accent-soft: #2e4940;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background:
+          radial-gradient(circle at top left, rgba(255, 255, 255, 0.85), transparent 32%),
+          linear-gradient(180deg, #f9f7f1 0%, var(--bg) 55%, #f2eee6 100%);
+        color: var(--text);
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 28px 20px 72px;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .brand-mark {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        background: var(--accent);
+        color: #f7f3ea;
+        display: grid;
+        place-items: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        box-shadow: 0 10px 24px rgba(31, 53, 45, 0.14);
+      }
+
+      .brand-text strong {
+        display: block;
+        font-size: 1.05rem;
+      }
+
+      .brand-text span {
+        display: block;
+        color: var(--muted);
+        font-size: 0.92rem;
+      }
+
+      .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .nav-link {
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.84);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 10px 14px;
+        font-size: 0.92rem;
+      }
+
+      .hero {
+        display: grid;
+        grid-template-columns: 1.2fr 0.95fr;
+        gap: 20px;
+        align-items: stretch;
+      }
+
+      .card {
+        background: rgba(255, 253, 248, 0.92);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        box-shadow: 0 16px 34px rgba(31, 53, 45, 0.07);
+      }
+
+      .hero-copy {
+        padding: 34px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: var(--surface-soft);
+        color: var(--accent-soft);
+        font-size: 0.88rem;
+        font-weight: 600;
+      }
+
+      h1 {
+        margin: 18px 0 14px;
+        font-size: clamp(2.2rem, 5vw, 4.3rem);
+        line-height: 0.98;
+        letter-spacing: -0.03em;
+      }
+
+      .lead {
+        margin: 0;
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: var(--muted);
+        max-width: 56ch;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 26px;
+      }
+
+      .button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 52px;
+        padding: 0 18px;
+        border-radius: 16px;
+        font-weight: 700;
+      }
+
+      .button-primary {
+        background: var(--accent);
+        color: #fbf8f2;
+      }
+
+      .button-secondary {
+        background: var(--surface-soft);
+        color: var(--accent);
+        border: 1px solid var(--line);
+      }
+
+      .hero-panel {
+        padding: 24px;
+        display: grid;
+        gap: 14px;
+      }
+
+      .mock {
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        background: linear-gradient(180deg, #fffdf8 0%, #f8f4ed 100%);
+        padding: 18px;
+      }
+
+      .mock-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+
+      .mock-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        background: var(--accent);
+        color: #fff8ef;
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+      }
+
+      .mock-button {
+        width: 42px;
+        height: 42px;
+        border-radius: 14px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+      }
+
+      .mock-wave {
+        height: 108px;
+        border-radius: 22px;
+        border: 1px solid var(--line);
+        background: rgba(242, 237, 228, 0.66);
+        display: grid;
+        place-items: center;
+        color: #a39b90;
+        font-weight: 700;
+      }
+
+      .mock-record {
+        width: 116px;
+        height: 116px;
+        margin: 18px auto 0;
+        border-radius: 999px;
+        border: 2px solid #d7d2c8;
+        background: #fffdf8;
+        display: grid;
+        place-items: center;
+      }
+
+      .mock-dot {
+        width: 38px;
+        height: 38px;
+        border-radius: 999px;
+        background: #e37262;
+      }
+
+      .topics {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .topic-chip {
+        border-radius: 18px;
+        border: 1px solid var(--line);
+        background: #fffdf8;
+        padding: 14px;
+      }
+
+      .topic-chip strong {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.96rem;
+      }
+
+      .topic-chip span {
+        color: var(--muted);
+        font-size: 0.88rem;
+      }
+
+      .section {
+        margin-top: 22px;
+      }
+
+      .section-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .feature-card,
+      .link-card {
+        padding: 22px;
+      }
+
+      .feature-card h2,
+      .link-card h2 {
+        margin: 0 0 10px;
+        font-size: 1.05rem;
+      }
+
+      .feature-card p,
+      .link-card p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.65;
+      }
+
+      .link-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 14px;
+      }
+
+      .link-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        background: #fffdf8;
+        padding: 14px 16px;
+      }
+
+      .link-row span {
+        color: var(--muted);
+        font-size: 0.93rem;
+      }
+
+      .footer {
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 0.92rem;
+        text-align: center;
+      }
+
+      @media (max-width: 860px) {
+        .hero,
+        .section-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .topics {
+          grid-template-columns: 1fr;
+        }
+
+        .nav {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="nav">
+        <a class="brand" href="./index.html">
+          <div class="brand-mark">E</div>
+          <div class="brand-text">
+            <strong>Echo</strong>
+            <span>Voice-first notes that turn into action</span>
+          </div>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="./support.html">Support</a>
+          <a class="nav-link" href="./privacy.html">Privacy</a>
+          <a class="nav-link" href="./terms.html">Terms</a>
+        </div>
+      </div>
+
+      <div class="hero">
+        <div class="card hero-copy">
+          <div class="eyebrow">On-device voice memo app</div>
+          <h1>Record quickly. Revisit clearly.</h1>
+          <p class="lead">
+            Echo helps you capture meetings, ideas, and follow-ups the moment they happen. Record first, then come back to a cleaner summary, the original memo, and the topics worth revisiting.
+          </p>
+          <div class="cta-row">
+            <a class="button button-primary" href="#">App Store link coming soon</a>
+            <a class="button button-secondary" href="./support.html">Get support</a>
+          </div>
+        </div>
+
+        <div class="card hero-panel">
+          <div class="mock">
+            <div class="mock-top">
+              <div class="mock-badge">E</div>
+              <div class="mock-button"></div>
+            </div>
+            <div class="mock-wave">00:00</div>
+            <div class="mock-record">
+              <div class="mock-dot"></div>
+            </div>
+          </div>
+          <div class="topics">
+            <div class="topic-chip">
+              <strong>Fast capture</strong>
+              <span>Open and record immediately</span>
+            </div>
+            <div class="topic-chip">
+              <strong>Clean review</strong>
+              <span>See summary and source together</span>
+            </div>
+            <div class="topic-chip">
+              <strong>Revisit later</strong>
+              <span>Return to the right memos fast</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section section-grid">
+        <div class="card feature-card">
+          <h2>Voice-first from the start</h2>
+          <p>
+            Echo is built around the recording flow first, so the app stays fast and lightweight instead of feeling like a cluttered workspace.
+          </p>
+        </div>
+        <div class="card feature-card">
+          <h2>Organized without extra work</h2>
+          <p>
+            Related memos can be grouped by topic, and important notes can be marked for follow-up when you want to return to them later.
+          </p>
+        </div>
+        <div class="card feature-card">
+          <h2>Designed for minimal friction</h2>
+          <p>
+            Record, save, reopen, and continue. Echo focuses on the smallest useful loop instead of adding heavy setup before the note even starts.
+          </p>
+        </div>
+      </div>
+
+      <div class="section section-grid">
+        <div class="card link-card">
+          <h2>Useful links</h2>
+          <p>
+            Keep every launch-related link in one place so support, review, and sharing stay simple.
+          </p>
+          <div class="link-list">
+            <a class="link-row" href="./support.html">
+              <strong>Support</strong>
+              <span>Questions, bug reports, contact</span>
+            </a>
+            <a class="link-row" href="./privacy.html">
+              <strong>Privacy Policy</strong>
+              <span>Permissions, storage, billing notes</span>
+            </a>
+            <a class="link-row" href="./terms.html">
+              <strong>Terms of Service</strong>
+              <span>Usage terms and subscription note</span>
+            </a>
+          </div>
+        </div>
+        <div class="card link-card" style="grid-column: span 2;">
+          <h2>What to replace before launch</h2>
+          <p>
+            Swap the placeholder App Store button, update the support email in all three static pages, and connect your final Netlify URLs to the app env variables.
+          </p>
+          <div class="link-list">
+            <div class="link-row">
+              <strong>Support email</strong>
+              <span>Replace `hello@example.com`</span>
+            </div>
+            <div class="link-row">
+              <strong>App Store button</strong>
+              <span>Insert final App Store URL after listing is live</span>
+            </div>
+            <div class="link-row">
+              <strong>App env values</strong>
+              <span>Point app settings to the Netlify policy and support pages</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        Echo is a lightweight voice memo product focused on fast capture, clean review, and practical follow-up.
+      </div>
+    </div>
+  </body>
+</html>
