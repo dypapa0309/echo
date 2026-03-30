@@ -8,11 +8,31 @@
   status = 200
 
 [[redirects]]
+  from = "/ko"
+  to = "/ko-index.html"
+  status = 200
+
+[[redirects]]
+  from = "/ko/privacy"
+  to = "/ko-privacy.html"
+  status = 200
+
+[[redirects]]
   from = "/terms"
   to = "/terms.html"
   status = 200
 
 [[redirects]]
+  from = "/ko/terms"
+  to = "/ko-terms.html"
+  status = 200
+
+[[redirects]]
   from = "/support"
   to = "/support.html"
+  status = 200
+
+[[redirects]]
+  from = "/ko/support"
+  to = "/ko-support.html"
   status = 200

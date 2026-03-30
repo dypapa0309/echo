@@ -38,10 +38,39 @@
       h2 { margin-top: 2rem; font-size: 1.1rem; }
       .muted { color: var(--muted); }
       a { color: var(--accent); }
+      .topbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 14px;
+      }
+      .lang-switch {
+        display: inline-flex;
+        gap: 8px;
+      }
+      .lang-link {
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.84);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.88rem;
+        text-decoration: none;
+      }
+      .lang-link-active {
+        background: var(--accent);
+        color: #fbf8f2;
+        border-color: var(--accent);
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
+      <div class="topbar">
+        <div class="lang-switch">
+          <a class="lang-link lang-link-active" href="/support">EN</a>
+          <a class="lang-link" href="/ko/support">KO</a>
+        </div>
+      </div>
       <div class="card">
         <h1>Echo Support</h1>
         <p class="muted">Fast help for recording, memo, billing, and permission issues.</p>

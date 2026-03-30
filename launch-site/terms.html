@@ -36,10 +36,39 @@
       h1 { margin-top: 0; font-size: 2rem; }
       h2 { margin-top: 2rem; font-size: 1.1rem; }
       .muted { color: var(--muted); }
+      .topbar {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 14px;
+      }
+      .lang-switch {
+        display: inline-flex;
+        gap: 8px;
+      }
+      .lang-link {
+        border: 1px solid var(--line);
+        background: rgba(255, 253, 248, 0.84);
+        color: var(--muted);
+        border-radius: 999px;
+        padding: 8px 12px;
+        font-size: 0.88rem;
+        text-decoration: none;
+      }
+      .lang-link-active {
+        background: #1f352d;
+        color: #fbf8f2;
+        border-color: #1f352d;
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
+      <div class="topbar">
+        <div class="lang-switch">
+          <a class="lang-link lang-link-active" href="/terms">EN</a>
+          <a class="lang-link" href="/ko/terms">KO</a>
+        </div>
+      </div>
       <div class="card">
         <h1>Echo Terms of Service</h1>
         <p class="muted">Last updated: March 30, 2026</p>

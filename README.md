@@ -258,9 +258,13 @@ npm run prebuild
 - [APP_STORE_METADATA.md](./APP_STORE_METADATA.md): 앱 이름, 부제목, 설명, 키워드, 심사 메모 초안
 - [launch-site/README.md](./launch-site/README.md): Netlify 배포용 지원/약관/개인정보 페이지 안내
 - [launch-site/index.html](./launch-site/index.html): Echo 소개 랜딩 페이지 초안
+- [launch-site/ko-index.html](./launch-site/ko-index.html): Echo 소개 랜딩 페이지 한글 초안
 - [launch-site/privacy.html](./launch-site/privacy.html): 개인정보 처리방침 초안
+- [launch-site/ko-privacy.html](./launch-site/ko-privacy.html): 개인정보 처리방침 한글 초안
 - [launch-site/terms.html](./launch-site/terms.html): 이용약관 초안
+- [launch-site/ko-terms.html](./launch-site/ko-terms.html): 이용약관 한글 초안
 - [launch-site/support.html](./launch-site/support.html): 고객지원 페이지 초안
+- [launch-site/ko-support.html](./launch-site/ko-support.html): 고객지원 한글 초안
 
 ## 📞 지원
 

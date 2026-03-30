@@ -88,6 +88,13 @@
         gap: 10px;
       }
 
+      .lang-switch {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: 10px;
+      }
+
       .nav-link {
         border: 1px solid var(--line);
         background: rgba(255, 253, 248, 0.84);
@@ -95,6 +102,12 @@
         border-radius: 999px;
         padding: 10px 14px;
         font-size: 0.92rem;
+      }
+
+      .lang-link-active {
+        background: var(--accent);
+        color: #fbf8f2;
+        border-color: var(--accent);
       }
 
       .hero {
@@ -350,6 +363,10 @@
           <a class="nav-link" href="/support">Support</a>
           <a class="nav-link" href="/privacy">Privacy</a>
           <a class="nav-link" href="/terms">Terms</a>
+          <div class="lang-switch">
+            <a class="nav-link lang-link-active" href="/">EN</a>
+            <a class="nav-link" href="/ko">KO</a>
+          </div>
         </div>
       </div>
 

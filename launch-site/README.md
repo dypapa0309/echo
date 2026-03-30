@@ -5,9 +5,13 @@ This folder contains static pages for release support links.
 ## Files
 
 - `index.html`
+- `ko-index.html`
 - `support.html`
+- `ko-support.html`
 - `privacy.html`
+- `ko-privacy.html`
 - `terms.html`
+- `ko-terms.html`
 
 ## Suggested Netlify deployment
 
@@ -26,8 +30,12 @@ Repo deploy option:
 Example:
 
 - `https://your-site.netlify.app/`
+- `https://your-site.netlify.app/ko`
 - `https://your-site.netlify.app/support`
+- `https://your-site.netlify.app/ko/support`
 - `https://your-site.netlify.app/privacy`
+- `https://your-site.netlify.app/ko/privacy`
 - `https://your-site.netlify.app/terms`
+- `https://your-site.netlify.app/ko/terms`
 
 Netlify redirects for the clean routes are already included in `netlify.toml`.

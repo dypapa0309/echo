@@ -27,6 +27,7 @@ The `launch-site/` folder contains three static pages you can deploy as-is or co
 Suggested final URLs:
 
 - `https://<your-site>.netlify.app/`
+- `https://<your-site>.netlify.app/ko`
 - `https://<your-site>.netlify.app/support`
 - `https://<your-site>.netlify.app/privacy`
 - `https://<your-site>.netlify.app/terms`
@@ -39,9 +40,13 @@ If you want clean paths on Netlify, either:
 This repo now includes `netlify.toml`, so repository deploys can publish `launch-site/` directly and still open:
 
 - `/`
+- `/ko`
 - `/support`
 - `/privacy`
 - `/terms`
+- `/ko/support`
+- `/ko/privacy`
+- `/ko/terms`
 
 ## Environment Variables To Fill Before Release
 
