@@ -12,6 +12,7 @@ import {
   Modal,
   AppState,
   Linking,
+  Platform,
   useColorScheme,
   ScrollView as RNScrollView,
 } from 'react-native';
@@ -43,6 +44,13 @@ type ExpansionIdea = {
 
 const LANGUAGE_STORAGE_KEY = 'echo:language';
 const APP_VERSION = appConfig.expo.version ?? '0.1.0';
+const buildCustomTopicId = (label: string) =>
+  `custom:${label
+    .trim()
+    .toLowerCase()
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9가-힣-_]/g, '')
+    .slice(0, 32)}`;
 
 const readPublicEnv = (key: string): string => {
   const processLike = globalThis as typeof globalThis & {
@@ -202,6 +210,18 @@ const uiText = {
     detailCommentPlaceholder: '나중에 이어갈 생각이나 떠오른 아이디어를 적어 두세요',
     detailCommentAdd: '코멘트 추가',
     detailFollowUps: '챙길 일',
+    currentTopic: '현재 주제',
+    changeTopic: '주제 바꾸기',
+    createTopic: '새 주제 만들기',
+    resetTopic: '자동 분류로 되돌리기',
+    chooseTopic: '보낼 주제를 고르세요',
+    chooseTopicHint: '현재 메모를 다른 주제 묶음으로 옮길 수 있습니다.',
+    topicPromptTitle: '새 주제 만들기',
+    topicPromptMessage: '이 메모를 새 주제 묶음으로 보냅니다.',
+    topicPromptPlaceholder: '예: 가격 정책 / 고객 인터뷰',
+    topicMoved: '메모를 다른 주제로 보냈습니다.',
+    topicReset: '자동 분류로 되돌렸습니다.',
+    topicSaveFail: '주제 변경을 저장하지 못했습니다.',
     sendToFollowUps: '챙길 메모로 보내기',
     removeFromFollowUps: '챙길 메모에서 빼기',
     followUpAdded: '챙길 메모로 보냈습니다.',
@@ -326,6 +346,18 @@ const uiText = {
     detailCommentPlaceholder: 'Add follow-up thoughts or ideas you want to revisit later',
     detailCommentAdd: 'Add Note',
     detailFollowUps: 'Follow Up',
+    currentTopic: 'Current Topic',
+    changeTopic: 'Change Topic',
+    createTopic: 'Create Topic',
+    resetTopic: 'Use Auto Topic',
+    chooseTopic: 'Choose a topic',
+    chooseTopicHint: 'Move this memo to a different topic group.',
+    topicPromptTitle: 'Create a new topic',
+    topicPromptMessage: 'This memo will be moved into a new topic group.',
+    topicPromptPlaceholder: 'Example: Pricing / Customer Interviews',
+    topicMoved: 'Moved this memo to another topic.',
+    topicReset: 'Returned this memo to auto topic grouping.',
+    topicSaveFail: 'Could not save the topic change.',
     sendToFollowUps: 'Send to Follow Up',
     removeFromFollowUps: 'Remove from Follow Up',
     followUpAdded: 'Sent to Follow Up.',
@@ -619,6 +651,15 @@ const SettingsCogIcon = ({ color }: { color: string }) => (
 const FloatingRecorderIcon = () => (
   <View style={styles.floatingRecorderIconRing}>
     <View style={styles.floatingRecorderIconDot} />
+  </View>
+);
+
+const TopicSwitchIcon = ({ color }: { color: string }) => (
+  <View style={styles.topicSwitchIconWrap}>
+    <View style={[styles.topicSwitchIconBar, { backgroundColor: color }]} />
+    <View style={[styles.topicSwitchIconBar, styles.topicSwitchIconBarBottom, { backgroundColor: color }]} />
+    <View style={[styles.topicSwitchIconDot, { borderColor: color }]} />
+    <View style={[styles.topicSwitchIconArrow, { borderTopColor: color, borderRightColor: color }]} />
   </View>
 );
 
@@ -1178,6 +1219,101 @@ export const MainScreen = ({ quickCaptureToken = 0 }: { quickCaptureToken?: numb
     }
   };
 
+  const assignMemoToTopic = async (memo: VoiceMemo, topicLabel: string) => {
+    const trimmed = topicLabel.trim();
+    if (!trimmed) {
+      return;
+    }
+
+    try {
+      await storageUtils.updateMemo(memo.id, {
+        customTopicId: buildCustomTopicId(trimmed),
+        customTopicLabel: trimmed,
+      });
+      await loadMemos();
+      setStatusTone('success');
+      setStatusMessage(text.topicMoved);
+    } catch (error) {
+      setStatusTone('error');
+      setStatusMessage(text.topicSaveFail);
+    }
+  };
+
+  const resetMemoTopicGrouping = async (memo: VoiceMemo) => {
+    try {
+      await storageUtils.updateMemo(memo.id, {
+        customTopicId: undefined,
+        customTopicLabel: undefined,
+      });
+      await loadMemos();
+      setStatusTone('success');
+      setStatusMessage(text.topicReset);
+    } catch (error) {
+      setStatusTone('error');
+      setStatusMessage(text.topicSaveFail);
+    }
+  };
+
+  const handleCreateTopicForMemo = (memo: VoiceMemo) => {
+    if (Platform.OS === 'ios' && Alert.prompt) {
+      Alert.prompt(
+        text.topicPromptTitle,
+        text.topicPromptMessage,
+        [
+          { text: text.cancel, style: 'cancel' },
+          {
+            text: text.save,
+            onPress: value => {
+              const nextTopic = value?.trim();
+              if (nextTopic) {
+                void assignMemoToTopic(memo, nextTopic);
+              }
+            },
+          },
+        ],
+        'plain-text',
+        memo.customTopicLabel ?? '',
+        text.topicPromptPlaceholder
+      );
+      return;
+    }
+
+    Alert.alert(text.topicPromptTitle, text.chooseTopicHint);
+  };
+
+  const handleMoveMemoToTopic = (memo: VoiceMemo) => {
+    const currentTopicId = echoCoreService.getMemoInsightGroupId(memo);
+    const currentTopicLabel = echoCoreService.getMemoInsightGroupLabel(memo);
+    const existingTopicButtons = memoInsightGroups
+      .filter(group => group.id !== currentTopicId)
+      .slice(0, 6)
+      .map(group => ({
+        text: group.label,
+        onPress: () => {
+          void assignMemoToTopic(memo, group.label);
+        },
+      }));
+
+    Alert.alert(text.chooseTopic, `${text.currentTopic}: ${currentTopicLabel}\n\n${text.chooseTopicHint}`, [
+      ...existingTopicButtons,
+      {
+        text: text.createTopic,
+        onPress: () => handleCreateTopicForMemo(memo),
+      },
+      ...(memo.customTopicId
+        ? [
+            {
+              text: text.resetTopic,
+              onPress: () => {
+                void resetMemoTopicGrouping(memo);
+              },
+            },
+          ]
+        : []),
+      { text: text.cancel, style: 'cancel' },
+    ]);
+  };
+
   const handleToggleDetailPlayback = async () => {
     if (!selectedMemo) {
       return;
@@ -1351,6 +1487,12 @@ export const MainScreen = ({ quickCaptureToken = 0 }: { quickCaptureToken?: numb
   const detailActionItems = selectedMemo?.actionItems ?? [];
   const detailSummarySections = parseSummarySections(selectedMemo?.summary);
   const detailTranscriptParagraphs = splitTranscriptParagraphs(selectedMemo?.transcript);
+  const selectedMemoTopicLabel = selectedMemo
+    ? echoCoreService.getMemoInsightGroupLabel(selectedMemo)
+    : '';
+  const detailVisibleTags = selectedMemo
+    ? (selectedMemo.tags ?? []).filter(tag => tag !== selectedMemoTopicLabel)
+    : [];
   const insightDetailOverview = buildInsightDetailOverview(insightDetailMemos);
   const insightExpansionIdeas = buildGroupAwareExpansionIdeas(insightDetailMemos);
   const homeTopics = buildHomeTopics(memoInsightGroups, memos);
@@ -2049,22 +2191,30 @@ export const MainScreen = ({ quickCaptureToken = 0 }: { quickCaptureToken?: numb
               <View style={[styles.detailHeroCard, isDarkMode && styles.surfaceCardDark]}>
                 <View style={styles.detailHeroTitleRow}>
                   <Text style={[styles.detailTitle, isDarkMode && styles.primaryTextDark]}>{selectedMemo.title || text.memoDefaultTitle}</Text>
-                  <TouchableOpacity
-                    style={[
-                      styles.detailFollowUpIconButton,
-                      selectedMemo.isFollowUp && styles.detailFollowUpIconButtonActive,
-                    ]}
-                    onPress={handleToggleFollowUp}
-                  >
-                    <Text
-                      style={[
-                        styles.detailFollowUpIcon,
-                        selectedMemo.isFollowUp && styles.detailFollowUpIconActive,
-                      ]}
+                  <View style={styles.detailHeroActionRow}>
+                    <TouchableOpacity
+                      style={styles.detailTopicIconButton}
+                      onPress={() => handleMoveMemoToTopic(selectedMemo)}
                     >
-                      {selectedMemo.isFollowUp ? '★' : '☆'}
-                    </Text>
-                  </TouchableOpacity>
+                      <TopicSwitchIcon color="#8c7254" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.detailFollowUpIconButton,
+                        selectedMemo.isFollowUp && styles.detailFollowUpIconButtonActive,
+                      ]}
+                      onPress={handleToggleFollowUp}
+                    >
+                      <Text
+                        style={[
+                          styles.detailFollowUpIcon,
+                          selectedMemo.isFollowUp && styles.detailFollowUpIconActive,
+                        ]}
+                      >
+                        {selectedMemo.isFollowUp ? '★' : '☆'}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
                 <Text style={[styles.detailMeta, isDarkMode && styles.secondaryTextDark]}>
                   {new Date(selectedMemo.timestamp).toLocaleString(language === 'ko' ? 'ko-KR' : 'en-US')} · {Math.floor(selectedMemo.duration / 60)}:{`${selectedMemo.duration % 60}`.padStart(2, '0')}
@@ -2082,9 +2232,9 @@ export const MainScreen = ({ quickCaptureToken = 0 }: { quickCaptureToken?: numb
                     </Text>
                   </View>
                 )}
-                {!!selectedMemo.tags?.length && (
+                {!!detailVisibleTags.length && (
                   <View style={styles.detailTagRow}>
-                    {selectedMemo.tags.map(tag => (
+                    {detailVisibleTags.map(tag => (
                       <View key={`${selectedMemo.id}-${tag}`} style={[styles.detailTagChip, isDarkMode && styles.tagChipDark]}>
                         <Text style={styles.detailTagChipText}>{tag}</Text>
                       </View>
@@ -3897,10 +4047,25 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 12,
   },
+  detailHeroActionRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   detailMeta: {
     marginTop: 8,
     color: '#7a766f',
     fontSize: 13,
+  },
+  detailTopicIconButton: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#f3eee5',
+    borderWidth: 1,
+    borderColor: '#e7ddcf',
   },
   detailFollowUpIconButton: {
     width: 38,
@@ -3923,6 +4088,44 @@ const styles = StyleSheet.create({
   },
   detailFollowUpIconActive: {
     color: '#f6efe3',
+  },
+  topicSwitchIconWrap: {
+    width: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  topicSwitchIconBar: {
+    position: 'absolute',
+    width: 10,
+    height: 2,
+    borderRadius: 999,
+    top: 4,
+    left: 2,
+  },
+  topicSwitchIconBarBottom: {
+    top: 11,
+    left: 6,
+    width: 8,
+  },
+  topicSwitchIconDot: {
+    position: 'absolute',
+    width: 5,
+    height: 5,
+    borderRadius: 999,
+    borderWidth: 1.5,
+    left: 2,
+    top: 2,
+  },
+  topicSwitchIconArrow: {
+    position: 'absolute',
+    width: 6,
+    height: 6,
+    right: 1,
+    bottom: 2,
+    borderTopWidth: 1.5,
+    borderRightWidth: 1.5,
+    transform: [{ rotate: '45deg' }],
   },
   detailFollowUpHint: {
     marginTop: 8,

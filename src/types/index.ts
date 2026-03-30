@@ -7,6 +7,8 @@ export interface VoiceMemo {
   title?: string;
   summary?: string;
   tags?: string[];
+  customTopicId?: string;
+  customTopicLabel?: string;
   searchIndex?: string;
   isFollowUp?: boolean;
   actionItems?: ActionItem[];

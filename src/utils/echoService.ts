@@ -276,11 +276,11 @@ export class EchoCoreService {
 
   private deriveTags(memo: VoiceMemo): string[] {
     const tags: string[] = [];
-    const topic = this.getMemoInsightGroupId(memo);
+    const topicInfo = this.getMemoInsightGroup(memo);
     const projectTag = this.extractProjectOrOrganizationTag(memo);
 
-    if (topic !== 'general') {
-      tags.push(this.getTopicLabel(topic));
+    if (topicInfo.id !== 'general') {
+      tags.push(topicInfo.label);
     }
     if (projectTag) {
       tags.push(projectTag);
@@ -596,14 +596,13 @@ export class EchoCoreService {
 
     memos.forEach(memo => {
       const sourceText = this.buildMemoTopicSource(memo);
-      if (!sourceText) {
+      if (!sourceText && !memo.customTopicId) {
         return;
       }
 
-      const topic = this.detectTopic(sourceText);
-      const label = this.getTopicLabel(topic);
-      const current = groups.get(topic) ?? {
-        label,
+      const topic = this.getMemoInsightGroup(memo);
+      const current = groups.get(topic.id) ?? {
+        label: topic.label,
         memos: [],
         previews: [],
         actionCount: 0,
@@ -617,7 +616,7 @@ export class EchoCoreService {
         current.previews.push(preview);
       }
 
-      groups.set(topic, current);
+      groups.set(topic.id, current);
     });
 
     return Array.from(groups.entries())
@@ -641,13 +640,12 @@ export class EchoCoreService {
       .slice(0, 4);
   }
 
-  getMemoInsightGroupId(memo: VoiceMemo): TopicId {
-    const sourceText = this.buildMemoTopicSource(memo);
-    if (!sourceText) {
-      return 'general';
-    }
+  getMemoInsightGroupId(memo: VoiceMemo): string {
+    return this.getMemoInsightGroup(memo).id;
+  }
 
-    return this.detectTopic(sourceText);
+  getMemoInsightGroupLabel(memo: VoiceMemo): string {
+    return this.getMemoInsightGroup(memo).label;
   }
 
   private buildMemoTopicSource(memo: VoiceMemo): string {
@@ -656,6 +654,29 @@ export class EchoCoreService {
       .filter(Boolean)
       .join(' ')
       .trim();
+  }
+
+  private getMemoInsightGroup(memo: VoiceMemo): { id: string; label: string } {
+    if (memo.customTopicId && memo.customTopicLabel) {
+      return {
+        id: memo.customTopicId,
+        label: memo.customTopicLabel,
+      };
+    }
+
+    const sourceText = this.buildMemoTopicSource(memo);
+    if (!sourceText) {
+      return {
+        id: 'general',
+        label: this.getTopicLabel('general'),
+      };
+    }
+
+    const detectedTopic = this.detectTopic(sourceText);
+    return {
+      id: detectedTopic,
+      label: this.getTopicLabel(detectedTopic),
+    };
   }
 
   private getTopicLabel(topic: TopicId): string {
