@@ -4,6 +4,7 @@
     "slug": "echo-memo",
     "scheme": "echo",
     "version": "0.1.0",
+    "icon": "./assets/branding/echo-logo/echo-app-icon-1024.png",
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "bundleIdentifier": "com.echo.memo",
