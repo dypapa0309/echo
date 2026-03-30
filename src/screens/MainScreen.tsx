@@ -3,6 +3,7 @@ import {
   StyleSheet,
   View,
   Text,
+  Image,
   TextInput,
   Alert,
   TouchableOpacity,
@@ -54,6 +55,7 @@ const readPublicEnv = (key: string): string => {
 const SUPPORT_EMAIL = readPublicEnv('EXPO_PUBLIC_SUPPORT_EMAIL');
 const PRIVACY_URL = readPublicEnv('EXPO_PUBLIC_PRIVACY_URL');
 const TERMS_URL = readPublicEnv('EXPO_PUBLIC_TERMS_URL');
+const HERO_LOGO = require('../../assets/branding/echo-logo/echo-logo-transparent.png');
 
 const buildSttRecoveryGuidance = (source: 'native' | 'mock' | 'fallback', message: string) => {
   if (source === 'native') {
@@ -1394,7 +1396,7 @@ export const MainScreen = ({ quickCaptureToken = 0 }: { quickCaptureToken?: numb
         <View style={styles.heroTopRow}>
           <View style={styles.heroBrand}>
             <View style={styles.heroIconWrap}>
-              <Text style={styles.heroIcon}>E</Text>
+              <Image source={HERO_LOGO} style={styles.heroLogoImage} resizeMode="contain" />
             </View>
           </View>
           <TouchableOpacity
@@ -2530,10 +2532,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  heroIcon: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontWeight: '800',
+  heroLogoImage: {
+    width: 28,
+    height: 28,
   },
   heroContent: {
     flex: 1,
